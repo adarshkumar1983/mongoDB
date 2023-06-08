@@ -1,0 +1,46 @@
+<!-- 
+  @Author: Your name
+  @Date:   2023-05-25 20:29:17
+  @Last Modified by:   Your name
+  @Last Modified time: 2023-05-30 12:31:00
+-->
+<table id="myTable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Show Radio Button</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>John</td>
+      <td><input type="radio" name="showRadio" class="show-radio"></td>
+    </tr>
+    <tr>
+      <td>Jane</td>
+      <td><input type="radio" name="showRadio" class="show-radio"></td>
+    </tr>
+    <tr>
+      <td>Mark</td>
+      <td><input type="radio" name="showRadio" class="show-radio"></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<script>
+  $(document).ready(function() {
+  $('.show-radio').change(function() {
+    var row = $(this).closest('tr');
+    var radioButtonCell = row.find('td:last-child');
+    
+    if ($(this).is(':checked')) {
+      radioButtonCell.show();
+    } else {
+      radioButtonCell.hide();
+    }
+  });
+});
+  
+</script>
+

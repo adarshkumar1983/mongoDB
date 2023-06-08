@@ -1,0 +1,516 @@
+<!-- 
+  @Author: Your name
+  @Date:   2023-05-11 19:32:25
+  @Last Modified by:   Your name
+  @Last Modified time: 2023-06-05 20:18:00
+-->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>API Call on Select and Submit</title>
+
+  <link rel="stylesheet" href="/path/to/bootstrap.min.css" />
+  <link rel="stylesheet" href="/path/to/rwd-table.css" />
+  <script src="/path/to/jquery.min.js"></script>
+  <script src="/path/to/bootstrap.bundle.min.js"></script>
+  <script src="/path/to/rwd-table.js"></script>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css"
+    integrity="sha512-yxUu0bO5ZxSNV4de0yqMxMZb2jx3i85zPYIR5hAxH0CwpkzGlPz/ZfZllcOYN20oULtuMQ/htz+8y2gDJAZXnQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <style>
+    .container-row {
+      background-color: #ffcccb;
+      /* Change the color to your desired container row color */
+    }
+
+    .object-row {
+      background-color: #87ceeb;
+      /* Change the color to your desired object row color */
+    }
+
+
+    /* Customize table styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th,
+    td {
+      padding: 8px;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    /* Add hover effect to table rows */
+    tr:hover {
+      background-color: #f5f5f5;
+    }
+  </style>
+</head>
+
+<body class="bg-black text-white">
+  <div class="container-fluid p-5 bg-primary text-white text-center">
+    <img src="logi.jpg" class="rounded-circle" alt="Cinque Terre" width="54" height="56">
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-lg-12 mb-3" hidden>
+          <label for="search_box" class="form-label">Search Object:</label>
+          <input type="text" id="search_box" class="form-control" placeholder="Search for object...">
+        </div>
+      </div>
+      <br>
+
+      <div class="search-container">
+        <input type="text" id="search_input" class="form-control" placeholder="Search item....">
+      </div>
+    </div>
+
+    <br>
+    <div class="table-responsive">
+      <table id="item_table" class="table table-small-font table-tighten table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>Item Name</th>
+            <th>Type</th>
+            <th data-priority="1">Container Name</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+
+
+  </div>
+
+
+  </div>
+  <div class="container mt-5">
+    <div class="row">
+
+      <div class="col-lg-6 mb-3">
+        <label for="object_selector" class="form-label">Select Object:</label>
+        <select id="object_selector" name="object_selector"
+          class="form-select form-select-lg mb-3 animate__animated animate__pulse animate__infinite"></select>
+        <br>
+        <div id="object_info"></div>
+        <br>
+      </div>
+      <div class="col-lg-6 mb-3">
+        <label for="container_selector" class="form-label">Select Container:</label>
+        <select id="container_selector" name="container_selector"
+          class="form-select form-select-lg mb-3 animate__animated animate__pulse animate__infinite"></select>
+        <br>
+        <div id="container_info"></div>
+      </div>
+      <br>
+
+    </div>
+    <button id="submitButton" class="btn btn-primary">Submit</button>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script>
+    const submitButton = document.getElementById("submitButton");
+    const objectSelector = document.getElementById("object_selector");
+    const containerSelector = document.getElementById("container_selector");
+    const objectInfo = document.getElementById("object_info");
+    const containerInfo = document.getElementById("container_info");
+
+
+
+    // Add event listener to the submit button
+    submitButton.addEventListener("click", function () {
+      // Get the selected values
+      const selectedObject = objectSelector.value;
+      const selectedContainer = containerSelector.value;
+
+      // Display the selected values in the info divs
+      objectInfo.textContent = "Selected Object: " + selectedObject;
+      containerInfo.textContent = "Selected Container: " + selectedContainer;
+
+      // Create an object with the selected values
+      const data = {
+        item_name: selectedObject,
+        container_name: selectedContainer
+      };
+
+      // Send a POST request to the API endpoint to store the combination
+      fetch("http://localhost:3000/api/relation/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => response.json())
+        .then(result => {
+          // Handle the response from the API if needed
+          console.log(result);
+          // Update the selected values in the info divs
+          objectInfo.textContent = "Selected Object: " + result.item_name;
+          containerInfo.textContent = "Selected Container: " + result.container_name;
+        })
+        .catch(error => {
+          // Handle any errors that occur during the request
+          console.error(error);
+        });
+    });
+
+
+
+    // fetching by jquery
+    $(function () {
+      $('.table-responsive').responsiveTable({
+        pattern: 'priority-columns',
+        stickyTableHeader: true,
+        columnFollow: 'last', // Set the position of the pattern (first, last, both)
+        // Add other configuration options as needed
+      });
+    });
+
+
+    $(document).ready(function () {
+      const itemTable = $("#item_table tbody");
+      const itemNames = new Set(); // Set to store unique item names
+
+      // Fetch and display the items and their associated containers
+      function loadItems() {
+        const apiUrl = "http://localhost:3000/api/getAll";
+        $.getJSON(apiUrl, function (data) {
+          // Clear the current items in the table and reset the itemNames set
+          itemTable.empty();
+          itemNames.clear();
+
+          // Populate the table with items and their associated containers
+          $.each(data, function (index, item) {
+            const itemName = item.name;
+            const itemType = item.type;
+            const containerName = item.container_name;
+            const itemDescription = item.description;
+
+            // Check if the item name already exists
+            if (itemNames.has(itemName)) {
+              return; // Skip duplicate item names
+            }
+
+            // Add the item name to the set
+            itemNames.add(itemName);
+
+            const tableRow = $("<tr>").addClass("table-row");
+            const itemNameCell = $("<td>").text(itemName).addClass("item-name");
+            const itemTypeCell = $("<td>").text(itemType);
+            const containerNameCell = $("<td>").addClass("container-name");
+            const itemDescriptionCell = $("<td>").text(itemDescription);
+
+            // Add click event listener to show the selected item and associated container
+            tableRow.on("click", function () {
+              // Fetch container name based on the selected item
+              fetchContainerName(itemName, containerNameCell);
+            });
+
+            tableRow.append(itemNameCell, itemTypeCell, containerNameCell, itemDescriptionCell);
+            itemTable.append(tableRow);
+          });
+
+          // Remove duplicate item names outside the table
+          $(".item-name").each(function () {
+            const itemName = $(this).text();
+            if (itemNames.has(itemName)) {
+              itemNames.delete(itemName);
+            } else {
+              $(this).remove();
+            }
+          });
+
+
+          // Set the initial state of the checkbox (e.g., ticked or unticked)
+          // based on your requirement
+          showContainersCheckbox.prop("checked", true); // Change to the desired initial state
+          $(".container-name").show(); // Show all container names initially
+        }).fail(function (error) {
+          console.error(error);
+        });
+      }
+
+
+
+      $("#search_input").on("input", function () {
+        const searchValue = $(this).val().toLowerCase();
+        $("#item_table tbody tr").each(function () {
+          const itemName = $(this).find("td:first-child").text().toLowerCase();
+          if (itemName.includes(searchValue)) {
+            $(this).show();
+          } else {
+            $(this).hide();
+          }
+        });
+      });
+
+      // Fetch the container name based on the selected item
+      function fetchContainerName(selectedItem, containerNameCell) {
+        const apiUrl = "http://localhost:3000/api/relation/?item_name=" + selectedItem;
+        $.getJSON(apiUrl, function (data) {
+          const containerName = data.container_name;
+          console.log("Container Name: " + containerName);
+
+          // Update the container name in the same row
+          containerNameCell.text(containerName);
+        }).fail(function (error) {
+          console.error(error);
+        });
+      }
+
+      loadItems();
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+    // Fetch container associated with the selected object
+    function checkAssociatedContainer(selectedObject) {
+      const url = `http://localhost:3000/api/relation/?item_name=${selectedObject}`;
+
+      // Send a GET request to the API endpoint
+      fetch(url)
+        .then(response => response.json())
+        .then(result => {
+          if (result.container_name) {
+            // Pre-select the associated container in the container_selector
+            containerSelector.value = result.container_name;
+            // Display the associated container information
+            const containerInfo = document.getElementById('container_info');
+            containerInfo.innerHTML = `
+              <p>Name: ${result.container_name}</p>
+              <p>Description: ${result.container_description}</p>
+              <p>Type: ${result.container_type}</p>
+            `;
+          }
+        })
+        .catch(error => console.error(error));
+    }
+
+    function loadObjectsInSelectBox() {
+      const objectSelector = document.getElementById('object_selector');
+      const containerSelector = document.getElementById('container_selector');
+      const itemTable = document.getElementById('item_table');
+      const searchBox = document.getElementById('search_box');
+      const objectInfo = document.getElementById('object_info');
+      const containerInfo = document.getElementById('container_info');
+      const apiUrl = 'http://localhost:3000/api/getAll?type=object';
+      let filteredData = [];
+
+      if (apiUrl) {
+        fetch(apiUrl)
+          .then(response => response.json())
+          .then(data => {
+            // Store the data for later use
+            filteredData = data;
+
+            // Populate the dropdown with all objects
+            for (let i = 0; i < data.length; i++) {
+              const opt = document.createElement('option');
+              opt.value = data[i].name;
+              opt.innerHTML = data[i].name;
+              objectSelector.appendChild(opt);
+            }
+
+            // Populate the scrollable table with all items and their associated containers
+            for (let i = 0; i < data.length; i++) {
+              const itemName = data[i].name;
+              const containerName = data[i].container_name;
+
+              const tableRow = document.createElement('div');
+              tableRow.classList.add('table-row');
+
+              // const itemNameCell = document.createElement('div');
+              // itemNameCell.textContent = itemName;
+              // tableRow.appendChild(itemNameCell);
+
+              const containerNameCell = document.createElement('div');
+              containerNameCell.textContent = containerName;
+              tableRow.appendChild(containerNameCell);
+
+              // Add click event listener to show the selected item and associated container in the info divs
+              tableRow.addEventListener('click', function () {
+                objectInfo.textContent = "Selected Object: " + itemName;
+                containerInfo.textContent = "Selected Container: " + containerName;
+                objectSelector.value = itemName;
+                containerSelector.value = containerName;
+              });
+
+              itemTable.appendChild(tableRow);
+            }
+
+            // Handle search box input
+            searchBox.addEventListener('input', function () {
+              const searchText = searchBox.value.toLowerCase();
+              const filteredItems = filteredData.filter(obj => obj.name.toLowerCase().includes(searchText));
+
+              // Clear the current items in the table
+              itemTable.innerHTML = '';
+
+              // Populate the table with filtered items and their associated containers
+              for (let i = 0; i < filteredItems.length; i++) {
+                const itemName = filteredItems[i].name;
+                const containerName = filteredItems[i].container_name;
+
+                const tableRow = document.createElement('div');
+                tableRow.classList.add('table-row');
+
+                // const itemNameCell = document.createElement('div');
+                // itemNameCell.textContent = itemName;
+                // tableRow.appendChild(itemNameCell);
+
+                const containerNameCell = document.createElement('div');
+                containerNameCell.textContent = containerName;
+                tableRow.appendChild(containerNameCell);
+
+                // Add click event listener to show the selected item and associated container in the info divs
+                tableRow.addEventListener('click', function () {
+                  objectInfo.textContent = "Selected Object: " + itemName;
+                  containerInfo.textContent = "Selected Container: " + containerName;
+                  objectSelector.value = itemName;
+                  containerSelector.value = containerName;
+                });
+
+                itemTable.appendChild(tableRow);
+              }
+            });
+
+            // Handle objectSelector change event
+            objectSelector.addEventListener('change', function () {
+              const selectedObject = objectSelector.value;
+              const selectedItem = filteredData.find(obj => obj.name === selectedObject);
+
+              if (selectedItem) {
+                containerSelector.value = selectedItem.container_name;
+                objectInfo.textContent = "Selected Object: " + selectedObject;
+                containerInfo.textContent = "Selected Container: " + selectedItem.container_name;
+              }
+            });
+          })
+          .catch(error => console.error(error));
+      }
+    }
+
+
+    function loadContainersInSelectBox() {
+      const containerSelector = document.getElementById("container_selector");
+      const apiUrl = "http://localhost:3000/api/getAll?type=container";
+      if (apiUrl) {
+        fetch(apiUrl)
+          .then(response => response.json())
+          .then(data => {
+            for (let i = 0; i < data.length; i++) {
+              const opt = document.createElement("option");
+              opt.value = data[i].name;
+              opt.innerHTML = data[i].name;
+              containerSelector.appendChild(opt);
+            }
+
+            containerSelector.addEventListener("change", function () {
+              const index = containerSelector.selectedIndex;
+              const containerInfo = document.getElementById("container_info");
+              containerInfo.innerHTML = `
+                  <p>Name: ${data[index].name}</p>
+                  <p>Description: ${data[index].description}</p>
+                  <p>Type: ${data[index].type}</p>
+                `;
+            });
+          })
+          .catch(error => console.error(error));
+      }
+    }
+
+
+
+    // Function to fetch and display the relations of the selected item
+    function showItemRelations(selectedItem) {
+      const itemRelationsUrl = `http://localhost:3000/api/relation/getRelations?item_name=${selectedItem}`;
+
+      fetch(itemRelationsUrl)
+        .then(response => response.json())
+        .then(data => {
+          const itemRelations = data.relations;
+          const relationInfo = document.getElementById('relation_info');
+
+          if (itemRelations.length > 0) {
+            // Clear the existing relations
+            relationInfo.innerHTML = '';
+
+            // Display the relations
+            for (let i = 0; i < itemRelations.length; i++) {
+              const relation = itemRelations[i];
+
+              const relationItem = document.createElement('div');
+              relationItem.classList.add('relation-item');
+
+              const containerName = document.createElement('p');
+              containerName.textContent = 'Container: ' + relation.container_name;
+              relationItem.appendChild(containerName);
+
+              const containerDescription = document.createElement('p');
+              containerDescription.textContent = 'Description: ' + relation.container_description;
+              relationItem.appendChild(containerDescription);
+
+              const itemName = document.createElement('p');
+              itemName.textContent = 'Item: ' + relation.item_name;
+              relationItem.appendChild(itemName);
+
+              relationInfo.appendChild(relationItem);
+            }
+          } else {
+            // No relations found
+            relationInfo.textContent = 'No relations found for the selected item.';
+          }
+        })
+        .catch(error => console.error(error));
+    }
+
+    // ...
+
+    // Update the event listener for the objectSelector change event
+    objectSelector.addEventListener('change', function () {
+      const selectedObject = objectSelector.value;
+      const selectedItem = filteredData.find(obj => obj.name === selectedObject);
+
+      if (selectedItem) {
+        containerSelector.value = selectedItem.container_name;
+        objectInfo.textContent = 'Selected Object: ' + selectedObject;
+        containerInfo.textContent = 'Selected Container: ' + selectedItem.container_name;
+
+        // Fetch and display the relations of the selected item
+        showItemRelations(selectedObject);
+      }
+    });
+
+    loadContainersInSelectBox();
+    loadObjectsInSelectBox();
+         // Load the items on page load
+        //  loadItems();
+  </script>
+</body>
+
+</html>

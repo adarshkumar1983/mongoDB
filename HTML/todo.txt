@@ -1,0 +1,12 @@
+1. add a store button on relationship page, on clicking this button the selection in the two boxes should be stored in 
+2. improve relations api, if the item or container name is not already stored , fail the api 
+    if you wanted to store  blue pen, square box 
+    and either blue pen, or square box was not in your data, fail the api
+3. on selecting a item, if it is already associated with a container, the container must be pre selected
+    if you already had the relationship  blue pen, square box  stored 
+    the moment you select blue pen, square box will be automatically selected
+4. improve the api, if an item was already in the relationship, previous relationship must be removed, before creating the new relationship 
+        blue pen, square box 
+        blue pen, pink box 
+5.show a scrollable tabe, having item name and associated container name, having all items
+            if there is a text written in search box, only the filtered items must be displayed
