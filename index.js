@@ -2,7 +2,7 @@
  * @Author: Your name
  * @Date:   2023-04-21 14:58:06
  * @Last Modified by:   Your name
- * @Last Modified time: 2023-06-01 22:54:29
+ * @Last Modified time: 2023-06-10 00:00:51
  */
 require('dotenv').config();
 const cors = require('cors');
@@ -10,7 +10,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const mongoString = process.env.DATABASE_URL;
-//const port = 3000
+const port = 3000
 const router = express()
 router.use(cors());
 
@@ -25,7 +25,7 @@ database.on('error', (error) => {
 
 
 database.once('connected', () => {
-    console.log('Database Connected');
+    console.log('yes Database Connected');
 })
 
 const app = express();
